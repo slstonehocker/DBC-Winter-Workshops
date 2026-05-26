@@ -108,7 +108,6 @@ function registerEmployee() {
     document.getElementById("name").value = "";
     document.getElementById("email").value = "";
     document.getElementById("confirmEmail").value = "";
-    document.getElementById("phone").value = "";
     document.getElementById("branch").selectedIndex = 0;
     document.getElementById("trainingClass").innerHTML =
         '<option value="">Select Class</option>';
