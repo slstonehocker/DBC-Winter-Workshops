@@ -76,15 +76,22 @@ function updateClasses() {
 
 // REGISTER EMPLOYEE
 function registerEmployee() {
-    const selectedClass =
-        JSON.parse(
-            document.getElementById("trainingClass").value
-        );
+    const selectedClass = JSON.parse(
+        document.getElementById("trainingClass").value
+    );
+
+    const email = document.getElementById("email").value;
+    const confirmEmail = document.getElementById("confirmEmail").value;
+
+    if (email !== confirmEmail) {
+        alert("Emails do not match. Please try again.");
+        return;
+    }
 
     const employee = {
         type: "registration",
         name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
+        email: email,
         phone: document.getElementById("phone").value,
         branch: selectedClass.branch,
         trainingClass: selectedClass.name,
@@ -100,6 +107,7 @@ function registerEmployee() {
 
     document.getElementById("name").value = "";
     document.getElementById("email").value = "";
+    document.getElementById("confirmEmail").value = "";
     document.getElementById("phone").value = "";
     document.getElementById("branch").selectedIndex = 0;
     document.getElementById("trainingClass").innerHTML =
