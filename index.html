@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Workshop Signup</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="classes-box">
+
+        <h1>2026 WINTER WORKSHOPS</h1>
+
+        <p class="subtitle">
+            Register for your workshop below.
+        </p>
+
+        <label>Name</label>
+        <input type="text" id="name">
+
+        <label>Email</label>
+        <input type="email" id="email">
+
+        <label>Phone</label>
+        <input type="text" id="phone">
+
+        <label>Branch</label>
+
+        <select id="branch" onchange="updateClasses()">
+
+            <option value="">Select Branch</option>
+
+        </select>
+
+        <label>Class</label>
+
+        <select id="trainingClass">
+
+            <option value="">Select Class</option>
+
+        </select>
+
+        <p id="classDescription"></p>
+
+        <button onclick="registerEmployee()">
+            Register
+        </button>
+
+        
+        
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
