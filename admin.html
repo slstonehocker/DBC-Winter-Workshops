@@ -1,58 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Admin Portal</title>
-
+    <title>Admin Class Entry</title>
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-    <div class="classes-box">
+<div class="classes-box">
+    <h1>ADMIN WORKSHOP ENTRY</h1>
+    <p class=subtitle>
+    Admin, enter in your location and class details to add to the class google sheet
+    </p>
 
-        <h1>Submit a New Workshop</h1>
-        
-         <p class="subtitle">
-            Admin, add your locations Winter Workshop details below. Details will be added to the google sheet and allow users to sign up
-        </p>
+    <label for="adminBranch">Branch</label>
+    <input type="text" id="adminBranch" placeholder="Denver">
 
-        <label>Branch</label>
-        <input type="text" id="adminBranch">
+    <label for="adminClass">Class Name</label>
+    <input type="text" id="adminClass" placeholder="Lighting Design">
 
-        <label>Class Name</label>
-        <input type="text" id="adminClass">
+    <label for="adminDate">Date</label>
+    <input type="text" id="adminDate" placeholder="MM/DD/YYYY">
 
-        <label>Date</label>
-        <input type="text" id="adminDate" placeholder="mm/dd/yyyy">
+    <label for="adminTime">Time</label>
+    <input type="text" id="adminTime" placeholder="9-11 AM">
 
-        <label>Time</label>
-        <input type="text" id="adminTime" placeholder="ex: 9-11 am">
+    <label for="adminDescription">Description</label>
+    <textarea id="adminDescription" placeholder="Enter class description"></textarea>
 
-        <label>Description</label>
-        <textarea id="adminDescription"></textarea>
+    <label for="adminAddress">Address</label>
+    <input type="text" id="adminAddress" placeholder="123 Main St, Denver, CO">
 
-        <label>Address</label>
-        <input type="text" id="adminAddress">
+    <button type="button" onclick="addClass()">Add Class</button>
 
-        <button onclick="addClass()">
-            Add Class
-        </button>
-     
-<button onclick="clearRegistrations()">
-    Clear Registrations
-</button>
+    <button type="button" onclick="clearRegistrations()">
+        Clear Registrations and Classes
+    </button>
+</div>
 
-    </div>
-
-    <script src="script.js"></script>
-
+<script src="script.js"></script>
 </body>
-
 </html>

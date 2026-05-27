@@ -1,50 +1,87 @@
 const SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbz5ZuLfoXWVE8hoMukorze8-iWlFEE-IYh_UXXrkJE-HNSxuteB5q0wrBZkOesPnOnAWg/exec";
 
-
 let allClasses = [];
 
 // LOAD CLASSES FROM GOOGLE SHEETS
 async function loadClasses() {
-    const response = await fetch(SCRIPT_URL);
-
-    allClasses = await response.json();
 
     const branchDropdown =
         document.getElementById("branch");
 
-    const branches =
-        [...new Set(allClasses.map(c => c.branch))];
+    // Only run on employee page
+    if (!branchDropdown) {
+        return;
+    }
 
-    branchDropdown.innerHTML =
-        '<option value="">Select Branch</option>';
+    try {
 
-    for (let i = 0; i < branches.length; i++) {
-        const option = document.createElement("option");
+        const response =
+            await fetch(SCRIPT_URL);
 
-        option.value = branches[i];
-        option.textContent = branches[i];
+        allClasses =
+            await response.json();
 
-        branchDropdown.appendChild(option);
+        const branches =
+            [...new Set(
+                allClasses
+                    .map(c => c.branch)
+                    .filter(Boolean)
+            )];
+
+        branchDropdown.innerHTML =
+            '<option value="">Select Branch</option>';
+
+        for (let i = 0; i < branches.length; i++) {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                branches[i];
+
+            option.textContent =
+                branches[i];
+
+            branchDropdown.appendChild(option);
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not load classes."
+        );
     }
 }
 
 // UPDATE CLASS DROPDOWN
 function updateClasses() {
+
     const branch =
         document.getElementById("branch").value;
 
     const trainingClass =
         document.getElementById("trainingClass");
 
+    const classDescription =
+        document.getElementById("classDescription");
+
     trainingClass.innerHTML =
         '<option value="">Select Class</option>';
 
+    classDescription.innerHTML = "";
+
     const filteredClasses =
-        allClasses.filter(c => c.branch === branch);
+        allClasses.filter(
+            c => c.branch === branch
+        );
 
     for (let i = 0; i < filteredClasses.length; i++) {
-        const option = document.createElement("option");
+
+        const option =
+            document.createElement("option");
 
         option.value =
             JSON.stringify(filteredClasses[i]);
@@ -54,134 +91,346 @@ function updateClasses() {
 
         trainingClass.appendChild(option);
     }
+}
 
-    trainingClass.onchange = function () {
-        if (trainingClass.value === "") {
-            document.getElementById("classDescription").innerHTML = "";
+// SHOW CLASS DESCRIPTION
+document.addEventListener(
+    "change",
+    function (event) {
+
+        if (
+            event.target.id !==
+            "trainingClass"
+        ) {
+            return;
+        }
+
+        const trainingClassValue =
+            document.getElementById(
+                "trainingClass"
+            ).value;
+
+        const classDescription =
+            document.getElementById(
+                "classDescription"
+            );
+
+        if (
+            trainingClassValue === ""
+        ) {
+
+            classDescription.innerHTML = "";
+
             return;
         }
 
         const selectedClass =
-            JSON.parse(trainingClass.value);
+            JSON.parse(
+                trainingClassValue
+            );
 
-        document.getElementById("classDescription").innerHTML =
+        classDescription.innerHTML =
+
             "<strong>Description:</strong><br><br>" +
+
             selectedClass.description +
+
             "<br><br><strong>Date:</strong> " +
-            formatDisplayDate(selectedClass.date) +
+
+            formatDisplayDate(
+                selectedClass.date
+            ) +
+
             "<br><strong>Time:</strong> " +
+
             selectedClass.time;
-    };
-}
+    }
+);
 
 // REGISTER EMPLOYEE
 function registerEmployee() {
-    const selectedClass = JSON.parse(
-        document.getElementById("trainingClass").value
-    );
 
-    const email = document.getElementById("email").value;
-    const confirmEmail = document.getElementById("confirmEmail").value;
+    const name =
+        document.getElementById(
+            "name"
+        ).value.trim();
 
-    if (email !== confirmEmail) {
-        alert("Emails do not match. Please try again.");
+    const email =
+        document.getElementById(
+            "email"
+        ).value.trim();
+
+    const confirmEmail =
+        document.getElementById(
+            "confirmEmail"
+        ).value.trim();
+
+    const phone =
+        document.getElementById(
+            "phone"
+        ).value.trim();
+
+    const trainingClassValue =
+        document.getElementById(
+            "trainingClass"
+        ).value;
+
+    if (name === "") {
+
+        alert(
+            "Please enter your name."
+        );
+
         return;
     }
 
+    if (email === "") {
+
+        alert(
+            "Please enter your email."
+        );
+
+        return;
+    }
+
+    if (email !== confirmEmail) {
+
+        alert(
+            "Emails do not match."
+        );
+
+        return;
+    }
+
+    if (
+        trainingClassValue === ""
+    ) {
+
+        alert(
+            "Please select a class."
+        );
+
+        return;
+    }
+
+    const selectedClass =
+        JSON.parse(
+            trainingClassValue
+        );
+
     const employee = {
+
         type: "registration",
-        name: document.getElementById("name").value,
+
+        name: name,
+
         email: email,
-        phone: document.getElementById("phone").value,
-        branch: selectedClass.branch,
-        trainingClass: selectedClass.name,
-        date: formatDisplayDate(selectedClass.date),
-        time: selectedClass.time
+
+        phone: phone,
+
+        branch:
+            selectedClass.branch,
+
+        trainingClass:
+            selectedClass.name,
+
+        date:
+            formatDisplayDate(
+                selectedClass.date
+            ),
+
+        time:
+            selectedClass.time,
+
+        address:
+            selectedClass.address
     };
 
     fetch(SCRIPT_URL, {
+
         method: "POST",
+
         mode: "no-cors",
-        body: JSON.stringify(employee)
+
+        body:
+            JSON.stringify(employee)
     });
 
-    document.getElementById("name").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("confirmEmail").value = "";
-    document.getElementById("branch").selectedIndex = 0;
-    document.getElementById("trainingClass").innerHTML =
-        '<option value="">Select Class</option>';
-
-    if (document.getElementById("classDescription")) {
-        document.getElementById("classDescription").innerHTML = "";
-    }
-
     setTimeout(function () {
-        window.location.replace("confirmation.html");
+
+        window.location.replace(
+            "confirmation.html"
+        );
+
     }, 1500);
 }
 
-// ADD NEW CLASS FROM ADMIN PAGE
+// ADD CLASS FROM ADMIN PAGE
 function addClass() {
+
+    const branch =
+        document.getElementById(
+            "adminBranch"
+        ).value.trim();
+
+    const className =
+        document.getElementById(
+            "adminClass"
+        ).value.trim();
+
+    const date =
+        document.getElementById(
+            "adminDate"
+        ).value.trim();
+
+    const time =
+        document.getElementById(
+            "adminTime"
+        ).value.trim();
+
+    const description =
+        document.getElementById(
+            "adminDescription"
+        ).value.trim();
+
+    const address =
+        document.getElementById(
+            "adminAddress"
+        ).value.trim();
+
+    if (
+        branch === "" ||
+        className === "" ||
+        date === "" ||
+        time === ""
+    ) {
+
+        alert(
+            "Please fill out branch, class name, date, and time."
+        );
+
+        return;
+    }
+
     const newClass = {
+
         type: "class",
-        branch: document.getElementById("adminBranch").value,
-        name: document.getElementById("adminClass").value,
-        date: document.getElementById("adminDate").value,
-        time: document.getElementById("adminTime").value,
-        description: document.getElementById("adminDescription").value,
-        address: document.getElementById("adminAddress").value
+
+        branch: branch,
+
+        name: className,
+
+        date: date,
+
+        time: time,
+
+        description:
+            description,
+
+        address: address
     };
 
     fetch(SCRIPT_URL, {
+
         method: "POST",
+
         mode: "no-cors",
-        body: JSON.stringify(newClass)
+
+        body:
+            JSON.stringify(newClass)
     });
 
-    document.getElementById("adminBranch").value = "";
-    document.getElementById("adminClass").value = "";
-    document.getElementById("adminDate").value = "";
-    document.getElementById("adminTime").value = "";
-    document.getElementById("adminDescription").value = "";
-    document.getElementById("adminAddress").value = "";
+    setTimeout(function () {
 
-    alert("Class added successfully. Please see updated Google Sheet");
+        alert(
+            "Class submitted. Check the Classes tab."
+        );
+
+        document.getElementById(
+            "adminBranch"
+        ).value = "";
+
+        document.getElementById(
+            "adminClass"
+        ).value = "";
+
+        document.getElementById(
+            "adminDate"
+        ).value = "";
+
+        document.getElementById(
+            "adminTime"
+        ).value = "";
+
+        document.getElementById(
+            "adminDescription"
+        ).value = "";
+
+        document.getElementById(
+            "adminAddress"
+        ).value = "";
+
+    }, 1500);
 }
 
-// CLEAR REGISTRATIONS AND CLASSES
+// CLEAR REGISTRATIONS + CLASSES
 function clearRegistrations() {
-    const confirmClear = confirm(
-        "Delete ALL registrations and classes?"
-    );
+
+    const confirmClear =
+        confirm(
+            "Delete ALL registrations and classes?"
+        );
 
     if (!confirmClear) {
         return;
     }
 
     fetch(SCRIPT_URL, {
+
         method: "POST",
+
         mode: "no-cors",
+
         body: JSON.stringify({
+
             type: "clear"
         })
     });
 
-    alert("Registrations and classes cleared.");
+    alert(
+        "Registrations and classes cleared."
+    );
 }
 
-// FORMAT DATE AS M/D/YYYY
-function formatDisplayDate(dateString) {
-    const date = new Date(dateString);
+// FORMAT DATE
+function formatDisplayDate(
+    dateString
+) {
 
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
+    const date =
+        new Date(dateString);
 
-    return month + "/" + day + "/" + year;
+    if (isNaN(date)) {
+        return dateString;
+    }
+
+    const month =
+        date.getMonth() + 1;
+
+    const day =
+        date.getDate();
+
+    const year =
+        date.getFullYear();
+
+    return (
+        month +
+        "/" +
+        day +
+        "/" +
+        year
+    );
 }
 
-// LOAD CLASSES ONLY ON EMPLOYEE PAGE
-if (document.getElementById("branch")) {
-    loadClasses();
-}
+// LOAD CLASSES
+loadClasses();

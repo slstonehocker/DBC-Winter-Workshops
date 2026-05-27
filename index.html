@@ -1,66 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Workshop Signup</title>
-
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-    <div class="classes-box">
+<div class="classes-box">
+    <h1>2026 WINTER WORKSHOPS</h1>
 
-        <h1>2026 WINTER WORKSHOPS</h1>
+    <p class="subtitle">
+        Please select your preferred workshop information below.
+    </p>
 
-        <p class="subtitle">
-            Register for your workshop below.
-        </p>
+    <label for="name">Employee Name</label>
+    <input type="text" id="name" placeholder="Full Name">
 
-        <label>Name</label>
-        <input type="text" id="name">
+    <label for="email">Employee Email</label>
+    <input type="email" id="email" placeholder="Email">
 
-       <label for="email">Employee Email</label>
-<input type="email" id="email" placeholder="Email">
+    <label for="confirmEmail">Confirm Email</label>
+    <input type="email" id="confirmEmail" placeholder="Re-enter Email">
 
-<label for="confirmEmail">Confirm Email</label>
-<input type="email" id="confirmEmail" placeholder="Re-enter Email">
+    <label for="phone">Employee Phone</label>
+    <input type="text" id="phone" placeholder="Phone">
 
+    <label for="branch">Branch of Class</label>
+    <select id="branch" onchange="updateClasses()">
+        <option value="">Loading branches...</option>
+    </select>
 
-        <label>Branch</label>
+    <label for="trainingClass">Which class would you like to sign up for?</label>
+    <select id="trainingClass">
+        <option value="">Select Class</option>
+    </select>
 
-        <select id="branch" onchange="updateClasses()">
+    <p id="classDescription"></p>
 
-            <option value="">Select Branch</option>
+    <button type="button" onclick="registerEmployee()">Register</button>
+</div>
 
-        </select>
-
-        <label>Class</label>
-
-        <select id="trainingClass">
-
-            <option value="">Select Class</option>
-
-        </select>
-
-        <p id="classDescription"></p>
-
-        <button onclick="registerEmployee()">
-            Register
-        </button>
-
-        
-        
-    </div>
-
-    <script src="script.js"></script>
-
+<script src="script.js"></script>
 </body>
-
 </html>
