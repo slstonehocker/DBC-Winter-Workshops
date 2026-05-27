@@ -29,9 +29,17 @@
 
     <label for="adminDescription">Description</label>
     <textarea id="adminDescription" placeholder="Enter class description"></textarea>
+    
+     <label for="adminTeacher">Instructor</label>
+    <input type="text" id="adminTeacher" placeholder="Who is teaching the class?">
+    
+     <label for="adminLunch">Is lunch provided?</label>
+    <input type="text" id="adminLunch" placeholder="Yes/No">
 
-    <label for="adminAddress">Address</label>
+    
+     <label for="adminAddress">Address</label>
     <input type="text" id="adminAddress" placeholder="123 Main St, Denver, CO">
+
 
     <button type="button" onclick="addClass()">Add Class</button>
 
@@ -39,10 +47,18 @@
 
     <h2>Edit or Delete Existing Class</h2>
 
-    <label for="existingClass">Select Existing Class</label>
-    <select id="existingClass" onchange="loadClassForEditing()">
-        <option value="">Loading classes...</option>
-    </select>
+   <label for="existingClass">
+    Select Existing Class
+</label>
+
+<select
+    id="existingClass"
+    onchange="loadClassForEditing()"
+>
+    <option value="">
+        Loading classes...
+    </option>
+</select>
 
     <button type="button" onclick="updateClass()">Update Selected Class</button>
 
