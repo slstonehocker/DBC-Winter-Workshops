@@ -10,10 +10,10 @@
 <body>
 
 <div class="classes-box">
-    <h1>ADMIN WORKSHOP ENTRY</h1>
-    <p class=subtitle>
-    Admin, enter in your location and class details to add to the class google sheet
-    </p>
+
+    <h1>ADMIN CLASS ENTRY/EDIT</h1>
+
+    <h2>Add New Class</h2>
 
     <label for="adminBranch">Branch</label>
     <input type="text" id="adminBranch" placeholder="Denver">
@@ -35,11 +35,22 @@
 
     <button type="button" onclick="addClass()">Add Class</button>
 
-    <button type="button" onclick="clearRegistrations()">
-        Clear Registrations and Classes
-    </button>
+    <hr>
+
+    <h2>Edit or Delete Existing Class</h2>
+
+    <label for="existingClass">Select Existing Class</label>
+    <select id="existingClass" onchange="loadClassForEditing()">
+        <option value="">Loading classes...</option>
+    </select>
+
+    <button type="button" onclick="updateClass()">Update Selected Class</button>
+
+    <button type="button" onclick="deleteClass()">Delete Selected Class</button>
+
 </div>
 
 <script src="script.js"></script>
+    
 </body>
 </html>
