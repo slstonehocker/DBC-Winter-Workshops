@@ -126,16 +126,34 @@ function registerEmployee() {
 
     const selectedClass = JSON.parse(trainingClassValue);
 
-    const employee = {
-        type: "registration",
-        name: name,
-        email: email,
-        branch: selectedClass.branch,
-        trainingClass: selectedClass.name,
-        date: formatDisplayDate(selectedClass.date),
-        time: selectedClass.time,
-        address: selectedClass.address
-    };
+   const employee = {
+
+    type: "registration",
+
+    name: name,
+
+    email: email,
+
+    branch:
+        selectedClass.branch,
+
+    trainingClass:
+        selectedClass.name,
+
+    date:
+        formatDisplayDate(
+            selectedClass.date
+        ),
+
+    time:
+        selectedClass.time,
+
+    address:
+        selectedClass.address,
+
+    description:
+        selectedClass.description
+};
 
     fetch(SCRIPT_URL, {
         method: "POST",
