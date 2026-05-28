@@ -402,7 +402,7 @@ function deleteClass() {
     }
 
     const confirmDelete = confirm(
-        "Are you sure you want to delete this class?"
+        "Are you sure you want to delete this class? It will delete all existing registrations for the class."
     );
 
     if (!confirmDelete) {
