@@ -214,7 +214,7 @@ function addClass() {
     });
 
     setTimeout(function () {
-        alert("Class added.");
+        alert("Class added. Please see updated Google Sheet");
 
         clearAdminForm();
         loadAdminClasses();
@@ -298,7 +298,7 @@ function loadClassForEditing() {
 
 // UPDATE CLASS
 function updateClass() {
-    alert("Update button clicked");
+    
 
     if (!adminSelectedClass) {
         alert("Please select a class to update.");
@@ -356,7 +356,7 @@ function deleteClass() {
     }
 
     const confirmDelete = confirm(
-        "Are you sure you want to delete this class?"
+        "Are you sure you want to delete this class? All existing registrations will be deleted."
     );
 
     if (!confirmDelete) {
