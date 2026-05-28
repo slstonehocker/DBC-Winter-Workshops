@@ -43,6 +43,10 @@
     <button type="button" onclick="registerEmployee()">Register</button>
 </div>
 
-<script src="script.js"></script>
+<script>
+    const script = document.createElement("script");
+    script.src = "script.js?v=" + new Date().getTime();
+    document.body.appendChild(script);
+</script>
 </body>
 </html>
