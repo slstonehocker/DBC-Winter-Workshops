@@ -57,7 +57,12 @@ function updateClasses() {
         const option = document.createElement("option");
 
         option.value = JSON.stringify(filteredClasses[i]);
-        option.textContent = filteredClasses[i].name;
+
+        option.textContent =
+            filteredClasses[i].name +
+            " — " +
+            filteredClasses[i].seatsLeft +
+            " seats left";
 
         trainingClass.appendChild(option);
     }
@@ -97,7 +102,11 @@ document.addEventListener("change", function (event) {
         "<br><strong>Instructor:</strong> " +
         selectedClass.teacher +
         "<br><strong>Lunch Provided:</strong> " +
-        selectedClass.lunch;
+        selectedClass.lunch +
+        "<br><strong>Seats Left:</strong> " +
+        selectedClass.seatsLeft +
+        " of " +
+        selectedClass.capacity;
 });
 
 // REGISTER EMPLOYEE
@@ -120,7 +129,7 @@ function registerEmployee() {
     }
 
     if (email !== confirmEmail) {
-        alert("Emails do not match. Please try again");
+        alert("Emails do not match.");
         return;
     }
 
@@ -131,6 +140,11 @@ function registerEmployee() {
 
     const selectedClass =
         JSON.parse(trainingClassValue);
+
+    if (Number(selectedClass.seatsLeft) <= 0) {
+        alert("This class is full.");
+        return;
+    }
 
     const employee = {
         type: "registration",
@@ -143,7 +157,8 @@ function registerEmployee() {
         address: selectedClass.address,
         description: selectedClass.description,
         teacher: selectedClass.teacher,
-        lunch: selectedClass.lunch
+        lunch: selectedClass.lunch,
+        capacity: selectedClass.capacity
     };
 
     fetch(SCRIPT_URL, {
@@ -167,6 +182,7 @@ function addClass() {
     const address = document.getElementById("adminAddress").value.trim();
     const teacher = document.getElementById("adminTeacher").value.trim();
     const lunch = document.getElementById("adminLunch").value.trim();
+    const capacity = document.getElementById("adminCapacity").value.trim();
 
     if (
         branch === "" ||
@@ -187,7 +203,8 @@ function addClass() {
         description: description,
         address: address,
         teacher: teacher,
-        lunch: lunch
+        lunch: lunch,
+        capacity: capacity
     };
 
     fetch(SCRIPT_URL, {
@@ -197,7 +214,7 @@ function addClass() {
     });
 
     setTimeout(function () {
-        alert("Class added. Please see the updated Google Sheet");
+        alert("Class added.");
 
         clearAdminForm();
         loadAdminClasses();
@@ -214,13 +231,8 @@ async function loadAdminClasses() {
     }
 
     try {
-        existingClassDropdown.innerHTML =
-            '<option value="">Loading classes...</option>';
-
         const response = await fetch(SCRIPT_URL);
-        const text = await response.text();
-
-        allClasses = JSON.parse(text);
+        allClasses = await response.json();
 
         existingClassDropdown.innerHTML =
             '<option value="">Select Existing Class</option>';
@@ -235,12 +247,9 @@ async function loadAdminClasses() {
 
             existingClassDropdown.appendChild(option);
         }
-
     } catch (error) {
-        console.error("Admin classes failed to load:", error);
-
-        existingClassDropdown.innerHTML =
-            '<option value="">Could not load classes</option>';
+        console.error(error);
+        alert("Could not load admin classes.");
     }
 }
 
@@ -282,115 +291,60 @@ function loadClassForEditing() {
 
     document.getElementById("adminLunch").value =
         adminSelectedClass.lunch || "";
+
+    document.getElementById("adminCapacity").value =
+        adminSelectedClass.capacity || "";
 }
 
 // UPDATE CLASS
-
-
 function updateClass() {
-
+    alert("Update button clicked");
 
     if (!adminSelectedClass) {
-
-        alert(
-            "Please select a class to update."
-        );
-
+        alert("Please select a class to update.");
         return;
     }
 
     const updatedClass = {
-
         type: "updateClass",
-
-        rowNumber:
-            adminSelectedClass.rowNumber,
-
-        branch:
-            document.getElementById(
-                "adminBranch"
-            ).value.trim(),
-
-        name:
-            document.getElementById(
-                "adminClass"
-            ).value.trim(),
-
-        date:
-            document.getElementById(
-                "adminDate"
-            ).value.trim(),
-
-        time:
-            document.getElementById(
-                "adminTime"
-            ).value.trim(),
-
-        description:
-            document.getElementById(
-                "adminDescription"
-            ).value.trim(),
-
-        address:
-            document.getElementById(
-                "adminAddress"
-            ).value.trim(),
-
-        teacher:
-            document.getElementById(
-                "adminTeacher"
-            ).value.trim(),
-
-        lunch:
-            document.getElementById(
-                "adminLunch"
-            ).value.trim()
+        rowNumber: adminSelectedClass.rowNumber,
+        branch: document.getElementById("adminBranch").value.trim(),
+        name: document.getElementById("adminClass").value.trim(),
+        date: document.getElementById("adminDate").value.trim(),
+        time: document.getElementById("adminTime").value.trim(),
+        description: document.getElementById("adminDescription").value.trim(),
+        address: document.getElementById("adminAddress").value.trim(),
+        teacher: document.getElementById("adminTeacher").value.trim(),
+        lunch: document.getElementById("adminLunch").value.trim(),
+        capacity: document.getElementById("adminCapacity").value.trim()
     };
 
-    console.log(
-        "Sending update:",
-        updatedClass
-    );
+    console.log("Sending update:", updatedClass);
 
     fetch(SCRIPT_URL, {
-
         method: "POST",
-
         mode: "no-cors",
-
         headers: {
-            "Content-Type":
-                "application/json"
+            "Content-Type": "application/json"
         },
-
-        body:
-            JSON.stringify(updatedClass)
+        body: JSON.stringify(updatedClass)
     });
 
     setTimeout(function () {
-
-        alert(
-            "Class updated."
-        );
+        alert("Class updated.");
 
         adminSelectedClass = null;
 
         clearAdminForm();
 
         const existingClassDropdown =
-            document.getElementById(
-                "existingClass"
-            );
+            document.getElementById("existingClass");
 
-        if (
-            existingClassDropdown
-        ) {
-
+        if (existingClassDropdown) {
             existingClassDropdown.selectedIndex = 0;
         }
 
         loadAdminClasses();
-
     }, 1500);
 }
 
@@ -402,7 +356,7 @@ function deleteClass() {
     }
 
     const confirmDelete = confirm(
-        "Are you sure you want to delete this class? It will delete all existing registrations for the class."
+        "Are you sure you want to delete this class?"
     );
 
     if (!confirmDelete) {
@@ -424,6 +378,7 @@ function deleteClass() {
         alert("Class deleted.");
 
         adminSelectedClass = null;
+
         clearAdminForm();
 
         const existingClassDropdown =
@@ -434,7 +389,6 @@ function deleteClass() {
         }
 
         loadAdminClasses();
-
     }, 1500);
 }
 
@@ -448,7 +402,8 @@ function clearAdminForm() {
         "adminDescription",
         "adminAddress",
         "adminTeacher",
-        "adminLunch"
+        "adminLunch",
+        "adminCapacity"
     ];
 
     for (let i = 0; i < fields.length; i++) {
