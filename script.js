@@ -120,7 +120,7 @@ function registerEmployee() {
     }
 
     if (email !== confirmEmail) {
-        alert("Emails do not match.");
+        alert("Emails do not match. Please try again");
         return;
     }
 
