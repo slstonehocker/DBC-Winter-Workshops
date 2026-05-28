@@ -141,10 +141,9 @@ function registerEmployee() {
     const selectedClass =
         JSON.parse(trainingClassValue);
 
-    if (Number(selectedClass.seatsLeft) <= 0) {
-        alert("This class is full.");
-        return;
-    }
+   if (Number(selectedClass.seatsLeft) <= 0) {
+    alert("This class is full. You will be added to the waitlist.");
+}
 
     const employee = {
         type: "registration",
